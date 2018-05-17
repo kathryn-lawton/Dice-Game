@@ -1,6 +1,5 @@
 "use strict"
 
-
 function getBatmanAttack(){
 	console.log("1. Batarang");
 	console.log("2. Batmobile Takedown");
@@ -8,68 +7,48 @@ function getBatmanAttack(){
 	return prompt("Please choose a valid attack:");
 }
 
-function batmanAttacks(userAttack){
+function attackRoll(hitChance, damageDie, superHeroName, attackName){
+	let attackRoll = rollDie(20);
+	let damageRoll = 0;
+	if(attackRoll > hitChance)
+	{
+		 damageRoll = rollDie(damageDie);
+		console.log(superHeroName + "'s " + attackName + " hits for " + damageRoll + " damage");
+	} 
+	else{
+		console.log(superHeroName + "'s attack missed");
+	}
+
+	return damageRoll;
+}
+
+function batmanAttackSequence(userAttack){
 	let damageRoll = 0;	
 
 	if(userAttack == 1){
-		let attackRoll = rollDie(20);
-		if(attackRoll > 5)
-		{
-			damageRoll = rollDie(6);
-			console.log("Batman's Batarang hits for " + damageRoll + " damage!");
-		} 
-		else{
-			console.log("Batman's Batarang misses.");
-		}
-
-		return damageRoll;
+		damageRoll = attackRoll(5, 6, "Batman", "batarang");
 	}
-	if(userAttack == 2) {
-		let attackRoll = rollDie(20);
-		if (attackRoll > 10){
-			damageRoll = rollDie(8);
-			console.log("Batman's Batmobile Takedown hits for " + damageRoll + " damage!");
-		}
-		else{
-			console.log("Batman's Batmobile Takedown misses...");
-		}
-
-		return damageRoll;
+	else if(userAttack == 2){
+		damageRoll = attackRoll(10, 8, "Batman", "batmobile takedown");
 	}
 	else{
 		console.log("Invalid attack for Batman. He deals no damage this turn.");
-		return damageRoll;
-	}	
+	}
+
+	return damageRoll;	
 }
 
-function supermanAttacks(){
+function supermanAttackSequence(){
 	let damageRoll = 0;	
 
-	let attackRoll = rollDie(4);
-	if(attackRoll != 4){
-		let attackRoll = rollDie(20);
-		if(attackRoll > 10){
-			damageRoll = rollDie(10);
-			console.log("Superman used heat vision. Superman hits for " + damageRoll + " damage!");
-		} 
-		else{
-			console.log("Superman used heat vision. Superman misses...");
-		}
-
-		return damageRoll;
+	let abilityRoll = rollDie(4);
+	if(abilityRoll != 4){
+		damageRoll = attackRoll(10, 10, "Superman", "heat vision");
 	}
 	else{
-		let attackRoll = rollDie(20);
-		if (attackRoll > 15){
-			damageRoll = rollDie(12);
-			console.log("Superman used flying smash. Superman hits for " + damageRoll + " damage!");
-		}
-		else{
-			console.log("Superman used flying smash. Superman misses...");
-		}
-
-		return damageRoll;
+		damageRoll = attackRoll(15, 12, "Superman", "flying smash");
 	}
+	return damageRoll;
 }
 
 function rollDie(sides){
@@ -89,17 +68,16 @@ function startFightSimulator(){
 		let userAttack = 0;
 		do{
 			userAttack = getBatmanAttack();
-
 			if(!userAttack){
 				return;
 			}
 		} while(userAttack != 1 && userAttack != 2);
 
-		let damage = batmanAttacks(userAttack);
+		let damage = batmanAttackSequence(userAttack);
 		supermanHealth -= damage;
 
 		if(supermanHealth > 0) {
-			damage = supermanAttacks();
+			damage = supermanAttackSequence();
 			batmanHealth -= damage;
 		}
 	}
